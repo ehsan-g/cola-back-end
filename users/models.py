@@ -1,11 +1,7 @@
-import datetime
-
 from django.contrib.auth.models import (
     AbstractBaseUser,
-    AbstractUser,
     BaseUserManager,
     PermissionsMixin,
-    User,
 )
 from django.db import models
 from django.urls import reverse
