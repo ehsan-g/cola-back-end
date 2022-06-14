@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from buildings.models import Building, BuildingImage, Address
 
 from .models import (
     MyUser,
@@ -84,24 +83,5 @@ class UserAdminConfig(UserAdmin):
     )
 
 
-class BuildingAdminConfig(admin.ModelAdmin):
-    model = Building
-    list_display = ["building_name", "company", "is_active", "slug", "created_at"]
-    list_filter = ["building_name", "company"]
-    list_editable = ["is_active"]
-
-    prepopulated_fields = {"slug": ("building_name",)}
-
-
-class AddressAdminConfig(admin.ModelAdmin):
-    model = Address
-
-
-class BuildingImageAdminConfig(admin.ModelAdmin):
-    model = BuildingImage
-
 
 admin.site.register(MyUser, UserAdminConfig)
-admin.site.register(Building, BuildingAdminConfig)
-admin.site.register(BuildingImage, BuildingImageAdminConfig)
-admin.site.register(Address, AddressAdminConfig)

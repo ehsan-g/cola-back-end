@@ -9,25 +9,6 @@ class BuildingManager(models.Manager):
         return super(BuildingManager, self).get_queryset().filter(is_active=True)
 
 
-class Address(models.Model):
-    """
-    The Address table.
-    """
-
-    country = models.CharField(max_length=200, null=True, blank=True)
-    city = models.CharField(max_length=200, null=True, blank=True)
-    address = models.TextField(blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        verbose_name_plural = "Addresses"
-        ordering = ("-created_at",)
-
-    # e.g in django template,get URL links for all buildings by calling this
-    def __str__(self):
-        return str(self.address)
-
-
 class Building(models.Model):
     """
     The Building table.
@@ -54,12 +35,6 @@ class Building(models.Model):
         related_name="building_creator",
         default=MyUser,
     )
-    address = models.ForeignKey(
-        Address,
-        on_delete=models.CASCADE,
-        related_name="building_address",
-        default=Address,
-    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -80,13 +55,12 @@ class BuildingImage(models.Model):
     The Building Image table.
     """
 
-    building = models.ForeignKey(
+    building = models.OneToOneField(
         Building, on_delete=models.CASCADE, related_name="building_image"
     )
     image = models.ImageField(
         verbose_name=_("image"),
         help_text=_("Upload a building image"),
-        upload_to="images/",
         default="images/default.png",
     )
     alt_text = models.CharField(
@@ -102,3 +76,25 @@ class BuildingImage(models.Model):
     class Meta:
         verbose_name = _("Building Image")
         verbose_name_plural = _("Building Images")
+
+
+class Address(models.Model):
+    """
+    The Address table.
+    """
+
+    building = models.OneToOneField(
+        Building, on_delete=models.CASCADE, related_name="building_address"
+    )
+    country = models.CharField(max_length=200, null=True, blank=True)
+    city = models.CharField(max_length=200, null=True, blank=True)
+    address = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "Addresses"
+        ordering = ("-created_at",)
+
+    # e.g in django template,get URL links for all buildings by calling this
+    def __str__(self):
+        return str(self.address)

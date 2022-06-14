@@ -73,8 +73,5 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ["company", "first_name", "user_name"]
     # Email & Password are required by default
 
-    def get_short_name(self):
-        return self.email
-
     def __str__(self):
         return self.email
