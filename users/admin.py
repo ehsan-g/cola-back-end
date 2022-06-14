@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django.forms import Textarea, TextInput
+from buildings.models import Building, BuildingImage, Address
 
 from .models import (
     MyUser,
@@ -15,6 +15,7 @@ class UserAdminConfig(UserAdmin):
         "email",
         "user_name",
         "first_name",
+        "level",
     )
     ordering = ("-start_date",)
     list_display = (
@@ -24,10 +25,11 @@ class UserAdminConfig(UserAdmin):
         "last_name",
         "profile_picture",
         "company",
-        "is_admin",
-        "is_superuser",
+        "level",
         "is_active",
+        "is_admin",
         "is_staff",
+        "is_superuser",
     )
     fieldsets = (
         (
@@ -45,7 +47,17 @@ class UserAdminConfig(UserAdmin):
                 )
             },
         ),
-        ("Permissions", {"fields": ("is_staff", "is_active")}),
+        (
+            "Permissions",
+            {
+                "fields": (
+                    "is_staff",
+                    "is_active",
+                    "is_admin",
+                    "level",
+                )
+            },
+        ),
     )
 
     add_fieldsets = (
@@ -65,10 +77,31 @@ class UserAdminConfig(UserAdmin):
                     "password2",
                     "is_active",
                     "is_staff",
+                    "is_admin",
                 ),
             },
         ),
     )
 
 
+class BuildingAdminConfig(admin.ModelAdmin):
+    model = Building
+    list_display = ["building_name", "company", "is_active", "slug", "created_at"]
+    list_filter = ["building_name", "company"]
+    list_editable = ["is_active"]
+
+    prepopulated_fields = {"slug": ("building_name",)}
+
+
+class AddressAdminConfig(admin.ModelAdmin):
+    model = Address
+
+
+class BuildingImageAdminConfig(admin.ModelAdmin):
+    model = BuildingImage
+
+
 admin.site.register(MyUser, UserAdminConfig)
+admin.site.register(Building, BuildingAdminConfig)
+admin.site.register(BuildingImage, BuildingImageAdminConfig)
+admin.site.register(Address, AddressAdminConfig)

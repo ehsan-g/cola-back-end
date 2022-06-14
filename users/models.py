@@ -67,7 +67,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     is_admin = models.BooleanField(default=False)
     wallet_address = models.CharField(max_length=250, null=True, blank=True)
     nft_address = models.CharField(max_length=250, blank=True)
-    
+    level = models.IntegerField(default=0)
     objects = MyUserManager()
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["company", "first_name", "user_name"]
