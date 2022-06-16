@@ -14,7 +14,7 @@ class UserAdminConfig(UserAdmin):
         "email",
         "user_name",
         "first_name",
-        "level",
+        "permission_level",
     )
     ordering = ("-start_date",)
     list_display = (
@@ -24,7 +24,7 @@ class UserAdminConfig(UserAdmin):
         "last_name",
         "profile_picture",
         "company",
-        "level",
+        "permission_level",
         "is_active",
         "is_admin",
         "is_staff",
@@ -53,7 +53,7 @@ class UserAdminConfig(UserAdmin):
                     "is_staff",
                     "is_active",
                     "is_admin",
-                    "level",
+                    "permission_level",
                 )
             },
         ),

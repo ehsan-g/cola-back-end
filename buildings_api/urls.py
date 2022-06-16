@@ -4,5 +4,5 @@ from .views import BuildingList
 app_name = "blog_api"
 
 urlpatterns = [
-    path("", BuildingList.as_view(), name="list-buildings"),
+    path("buildings", BuildingList.as_view(), name="list-buildings"),
 ]

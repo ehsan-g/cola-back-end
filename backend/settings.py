@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "users",
+    "users_api",
     "buildings",
     "buildings_api",
 ]

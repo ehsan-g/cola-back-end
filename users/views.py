@@ -8,7 +8,7 @@ from rest_framework.permissions import AllowAny
 class MyUserCreate(APIView):
     permission_classes = [AllowAny]
 
-    def post(self, request, format="json"):
+    def register(self, request, format="json"):
         serializer = MyUserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()

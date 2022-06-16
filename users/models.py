@@ -4,7 +4,6 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 from django.db import models
-from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as __
 
@@ -39,16 +38,16 @@ class MyUserManager(BaseUserManager):
 
 
 class MyUser(AbstractBaseUser, PermissionsMixin):
-    NONE = "0"
-    PEPSI = "1"
-    COKE = "2"
+    NONE = 0
+    PEPSI = 1
+    COKE = 2
 
     TYPES = (
         (NONE, "-"),
         (PEPSI, "Pepsi"),
         (COKE, "Coke"),
     )
-    company = models.CharField(max_length=20, choices=TYPES, default="0")
+    company = models.IntegerField(choices=TYPES, default=0)
     email = models.EmailField(
         verbose_name="email_address", max_length=255, unique=True, blank=False
     )
@@ -63,7 +62,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     is_admin = models.BooleanField(default=False)
     wallet_address = models.CharField(max_length=250, null=True, blank=True)
     nft_address = models.CharField(max_length=250, blank=True)
-    level = models.IntegerField(default=0)
+    permission_level = models.IntegerField(default=0)
     objects = MyUserManager()
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["company", "first_name", "user_name"]
