@@ -126,9 +126,6 @@ def get_secret(key, default):
     return value
 
 
-print(
-    "---------------------------------------------------------------------------------"
-)
 print(get_secret("SQL_PASSWORD", os.environ.get("SQL_PASSWORD", "postgres")))
 
 
