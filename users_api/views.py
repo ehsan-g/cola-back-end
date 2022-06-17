@@ -7,7 +7,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import MyUserSerializer
+from .serializers import UserSerializer
 
 #  Customizing token claims with JWT / overriding
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -40,5 +40,5 @@ class ProfileView(APIView):
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        serializer = MyUserSerializer(user, many=False)
+        serializer = UserSerializer(user, many=False)
         return Response(serializer.data)

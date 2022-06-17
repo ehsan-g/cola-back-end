@@ -2,6 +2,8 @@ from django.db import models
 from django.urls import reverse
 from users.models import MyUser
 from django.utils.translation import gettext_lazy as _
+from django.core.validators import MaxValueValidator, MinValueValidator
+from multiselectfield import MultiSelectField
 
 #  for django panel / ex: to return only active ones get_queryset().is_active()
 class BuildingManager(models.Manager):
@@ -18,12 +20,12 @@ class Building(models.Model):
     PEPSI = 1
     COKE = 2
 
-    TYPES = (
+    CHOICES = (
         (NONE, "-"),
         (PEPSI, "Pepsi"),
         (COKE, "Coke"),
     )
-    company = models.IntegerField(choices=TYPES, default=0)
+    company = models.IntegerField(choices=CHOICES, default=0)
     building_name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     slug = models.SlugField(max_length=255, blank=True)
@@ -109,6 +111,9 @@ class Floor(models.Model):
     )
     title = models.CharField(max_length=200, null=True, blank=True)
     level = models.IntegerField(default=0)
+    permission_level = models.IntegerField(
+        default=0, validators=[MaxValueValidator(10), MinValueValidator(1)]
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -124,16 +129,64 @@ class Room(models.Model):
     The Room table.
     """
 
+    NONE = 0
+    PEPSI = 1
+    COKE = 2
+
+    CHOICES_COMPANY = (
+        (PEPSI, "Pepsi"),
+        (COKE, "Coke"),
+    )
+
+    def check_permission(self, user):
+        if (
+            user.permission_level < self.permission_level
+            or self.allowed_companies is None
+        ):  # ether
+            transaction_fee = 0.01 * price
+        elif 0.2 < price < 1:
+            transaction_fee = 0.02 * price
+        else:
+            transaction_fee = 0.03 * price
+
+        return transaction_fee
+
     floor = models.ForeignKey(
         Floor, on_delete=models.CASCADE, related_name="floor_rooms"
     )
     title = models.CharField(max_length=200, null=True, blank=True)
     capacity = models.IntegerField(default=0)
-    permission_level = models.IntegerField(default=0)
+    permission_level = models.IntegerField(
+        default=0, validators=[MaxValueValidator(10), MinValueValidator(1)]
+    )
+    permission_company = MultiSelectField(
+        choices=CHOICES_COMPANY, max_choices=2, max_length=2
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name_plural = "Rooms"
+        ordering = ("-created_at",)
+
+    def __str__(self):
+        return str(self.title)
+
+
+class Event(models.Model):
+    """
+    The Event table.
+    """
+    room = models.ForeignKey(
+        Room, on_delete=models.CASCADE, related_name="event_room"
+    )
+    title = models.CharField(max_length=200, null=True, blank=True)
+    capacity = models.IntegerField(default=0)
+    attendees = models.ManyToManyField(MyUser)
+    date_time = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "Events"
         ordering = ("-created_at",)
 
     def __str__(self):

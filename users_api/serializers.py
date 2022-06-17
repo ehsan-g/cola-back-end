@@ -34,7 +34,7 @@ class MyUserSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     user_name = serializers.SerializerMethodField(read_only=True)
     first_name = serializers.SerializerMethodField(read_only=True)
-    lastName = serializers.SerializerMethodField(read_only=True)
+    last_name = serializers.SerializerMethodField(read_only=True)
     employee_number = serializers.SerializerMethodField(read_only=True)
     profile_picture = serializers.SerializerMethodField(read_only=True)
     wallet_address = serializers.SerializerMethodField(read_only=True)

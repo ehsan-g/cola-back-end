@@ -6,6 +6,7 @@ from django.contrib.auth.models import (
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as __
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class MyUserManager(BaseUserManager):
@@ -62,7 +63,9 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     is_admin = models.BooleanField(default=False)
     wallet_address = models.CharField(max_length=250, null=True, blank=True)
     nft_address = models.CharField(max_length=250, blank=True)
-    permission_level = models.IntegerField(default=0)
+    permission_level = models.IntegerField(
+        default=0, validators=[MaxValueValidator(10), MinValueValidator(1)]
+    )
     objects = MyUserManager()
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["company", "first_name", "user_name"]

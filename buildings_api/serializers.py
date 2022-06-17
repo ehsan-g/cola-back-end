@@ -5,7 +5,7 @@ from buildings.models import Building, BuildingImage, Address, Room, Floor
 class BuildingSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField(read_only=True)
     address = serializers.SerializerMethodField(read_only=True)
-    floor = serializers.SerializerMethodField(read_only=True)
+    floors = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Building
@@ -16,7 +16,7 @@ class BuildingSerializer(serializers.ModelSerializer):
             "company",
             "image",
             "address",
-            "floor",
+            "floors",
         )
 
     def get_image(self, obj):
@@ -29,7 +29,7 @@ class BuildingSerializer(serializers.ModelSerializer):
         serializer = AddressSerializer(address, many=False)
         return serializer.data
 
-    def get_floor(self, obj):
+    def get_floors(self, obj):
         floor = obj.building_floor
         serializer = FloorSerializer(floor, many=True)
         return serializer.data
@@ -48,8 +48,10 @@ class AddressSerializer(serializers.ModelSerializer):
 
 
 class FloorSerializer(serializers.ModelSerializer):
-    def get_room(self, obj):
-        room = obj.floor_room
+    rooms = serializers.SerializerMethodField(read_only=True)
+
+    def get_rooms(self, obj):
+        room = obj.floor_rooms
         serializer = RoomSerializer(room, many=True)
         return serializer.data
 
