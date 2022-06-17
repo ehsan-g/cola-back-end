@@ -1,5 +1,5 @@
 from django.contrib import admin
-from buildings.models import Building, BuildingImage, Address, Floor, Room
+from buildings.models import Building, BuildingImage, Address, Floor, Room, MyEvent
 
 
 class BuildingImageInline(admin.StackedInline):
@@ -36,9 +36,21 @@ class FloorAdminConfig(admin.ModelAdmin):
 
 class RoomAdminConfig(admin.ModelAdmin):
     model = Room
-    list_display = ["title", "capacity", "permission_level", "created_at"]
+    list_display = [
+        "title",
+        "capacity",
+        "permission_level",
+        "created_at",
+    ]
+
+
+class MyEventAdminConfig(admin.ModelAdmin):
+    model = MyEvent
+
+    list_display = ["id", "title", "room"]
 
 
 admin.site.register(Building, BuildingAdminConfig)
 admin.site.register(Floor, FloorAdminConfig)
 admin.site.register(Room, RoomAdminConfig)
+admin.site.register(MyEvent, MyEventAdminConfig)

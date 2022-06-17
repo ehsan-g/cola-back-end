@@ -4,6 +4,8 @@ from users.models import MyUser
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import MaxValueValidator, MinValueValidator
 from multiselectfield import MultiSelectField
+from schedule.models import Event
+from schedule.models import Event, EventManager, EventRelation
 
 #  for django panel / ex: to return only active ones get_queryset().is_active()
 class BuildingManager(models.Manager):
@@ -37,7 +39,6 @@ class Building(models.Model):
         MyUser,
         on_delete=models.CASCADE,
         related_name="building_creator",
-        default=MyUser,
     )
 
     class Meta:
@@ -138,18 +139,18 @@ class Room(models.Model):
         (COKE, "Coke"),
     )
 
-    def check_permission(self, user):
-        if (
-            user.permission_level < self.permission_level
-            or self.allowed_companies is None
-        ):  # ether
-            transaction_fee = 0.01 * price
-        elif 0.2 < price < 1:
-            transaction_fee = 0.02 * price
-        else:
-            transaction_fee = 0.03 * price
+    # def check_permission(self, user):
+    #     if (
+    #         user.permission_level < self.permission_level
+    #         or self.allowed_companies is None
+    #     ):  # ether
+    #         transaction_fee = 0.01 * price
+    #     elif 0.2 < price < 1:
+    #         transaction_fee = 0.02 * price
+    #     else:
+    #         transaction_fee = 0.03 * price
 
-        return transaction_fee
+    #     return transaction_fee
 
     floor = models.ForeignKey(
         Floor, on_delete=models.CASCADE, related_name="floor_rooms"
@@ -172,22 +173,16 @@ class Room(models.Model):
         return str(self.title)
 
 
-class Event(models.Model):
-    """
-    The Event table.
-    """
-    room = models.ForeignKey(
-        Room, on_delete=models.CASCADE, related_name="event_room"
-    )
-    title = models.CharField(max_length=200, null=True, blank=True)
-    capacity = models.IntegerField(default=0)
-    attendees = models.ManyToManyField(MyUser)
-    date_time = models.DateTimeField(auto_now_add=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+class MyEventManager(EventManager):
+    def get_for_object(self, content_object, distinction="", inherit=True):
+        return EventRelation.objects.get_events_for_object(
+            content_object, distinction, inherit
+        )
 
-    class Meta:
-        verbose_name_plural = "Events"
-        ordering = ("-created_at",)
+
+class MyEvent(Event):
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="events_room")
+    objects = MyEventManager()
 
     def __str__(self):
-        return str(self.title)
+        return self.room.title

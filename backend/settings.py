@@ -37,9 +37,18 @@ INSTALLED_APPS = [
     "users_api",
     "buildings",
     "buildings_api",
+    "schedule",
+    "djangobower",
 ]
 
+STATICFILES_FINDERS = {
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    "djangobower.finders.BowerFinder",
+}
 
+
+BOWER_INSTALLED_APPS = ("jquery", "jquery-ui", "bootstrap", "fullcalendar#3.8.2")
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -83,6 +92,7 @@ MIDDLEWARE = [
     #
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
+    # "django.template.context_processors.request",
 ]
 
 ROOT_URLCONF = "backend.urls"
