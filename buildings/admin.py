@@ -30,7 +30,12 @@ class BuildingAdminConfig(admin.ModelAdmin):
 
 class FloorAdminConfig(admin.ModelAdmin):
     model = Floor
-    list_display = ["title", "level", "created_at"]
+    list_display = [
+        "title",
+        "level",
+        "created_at",
+        "get_building",
+    ]
     inlines = [RoomInline]
 
 
@@ -41,13 +46,15 @@ class RoomAdminConfig(admin.ModelAdmin):
         "capacity",
         "permission_level",
         "created_at",
+        "get_floor",
+        "get_building",
     ]
 
 
 class MyEventAdminConfig(admin.ModelAdmin):
     model = MyEvent
 
-    list_display = ["id", "title", "room"]
+    list_display = ["id", "title", "room", "get_floor", "get_building"]
 
 
 admin.site.register(Building, BuildingAdminConfig)

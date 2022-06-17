@@ -61,6 +61,7 @@ class FloorSerializer(serializers.ModelSerializer):
 
 
 class MyEventSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = MyEvent
         fields = "__all__"

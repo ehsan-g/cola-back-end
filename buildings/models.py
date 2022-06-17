@@ -21,11 +21,13 @@ class Building(models.Model):
     NONE = 0
     PEPSI = 1
     COKE = 2
+    JOINED = 3
 
     CHOICES = (
         (NONE, "-"),
         (PEPSI, "Pepsi"),
         (COKE, "Coke"),
+        (JOINED, "Joined"),
     )
     company = models.IntegerField(choices=CHOICES, default=0)
     building_name = models.CharField(max_length=255)
@@ -113,7 +115,7 @@ class Floor(models.Model):
     title = models.CharField(max_length=200, null=True, blank=True)
     level = models.IntegerField(default=0)
     permission_level = models.IntegerField(
-        default=0, validators=[MaxValueValidator(10), MinValueValidator(1)]
+        default=1, validators=[MaxValueValidator(10), MinValueValidator(1)]
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -123,6 +125,9 @@ class Floor(models.Model):
 
     def __str__(self):
         return str(self.title)
+
+    def get_building(self):
+        return self.building
 
 
 class Room(models.Model):
@@ -139,18 +144,6 @@ class Room(models.Model):
         (COKE, "Coke"),
     )
 
-    # def check_permission(self, user):
-    #     if (
-    #         user.permission_level < self.permission_level
-    #         or self.allowed_companies is None
-    #     ):  # ether
-    #         transaction_fee = 0.01 * price
-    #     elif 0.2 < price < 1:
-    #         transaction_fee = 0.02 * price
-    #     else:
-    #         transaction_fee = 0.03 * price
-
-    #     return transaction_fee
 
     floor = models.ForeignKey(
         Floor, on_delete=models.CASCADE, related_name="floor_rooms"
@@ -158,7 +151,7 @@ class Room(models.Model):
     title = models.CharField(max_length=200, null=True, blank=True)
     capacity = models.IntegerField(default=0)
     permission_level = models.IntegerField(
-        default=0, validators=[MaxValueValidator(10), MinValueValidator(1)]
+        default=1, validators=[MaxValueValidator(10), MinValueValidator(1)]
     )
     permission_company = MultiSelectField(
         choices=CHOICES_COMPANY, max_choices=2, max_length=2
@@ -171,6 +164,12 @@ class Room(models.Model):
 
     def __str__(self):
         return str(self.title)
+
+    def get_floor(self):
+        return self.floor
+
+    def get_building(self):
+        return self.floor.building
 
 
 class MyEventManager(EventManager):
@@ -186,3 +185,9 @@ class MyEvent(Event):
 
     def __str__(self):
         return self.room.title
+
+    def get_floor(self):
+        return self.room.floor
+
+    def get_building(self):
+        return self.room.floor.building

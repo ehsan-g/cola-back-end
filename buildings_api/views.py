@@ -9,6 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import (
     IsAuthenticated,
 )
+from django.db.models import Q
 
 # Create your views here.
 class BuildingList(APIView):
@@ -18,10 +19,10 @@ class BuildingList(APIView):
         user = request.user
 
         if user.company == 1:
-            buildings = Building.objects.filter(company=1).filter(is_active=True)
+            buildings = Building.objects.filter(Q(company=1) | Q(company=3)).filter(is_active=True)
 
         if user.company == 2:
-            buildings = Building.objects.filter(company=2).filter(is_active=True)
+            buildings = Building.objects.filter(Q(company=2) | Q(company=3)).filter(is_active=True)
 
         if user.company == 0 and user.is_superuser:
             buildings = Building.objects.filter(is_active=True)
