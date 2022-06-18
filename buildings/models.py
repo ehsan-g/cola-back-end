@@ -6,6 +6,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from multiselectfield import MultiSelectField
 from schedule.models import Event
 from schedule.models import Event, EventManager, EventRelation
+from django.contrib.postgres.fields import ArrayField
+
 
 #  for django panel / ex: to return only active ones get_queryset().is_active()
 class BuildingManager(models.Manager):
@@ -104,6 +106,19 @@ class Address(models.Model):
         return str(self.address)
 
 
+class FloorLayout(models.Model):
+    """
+    The Building Layout table.
+    """
+
+    name = models.CharField(max_length=100)
+    room_coordinates = models.CharField(max_length=1000)
+    wall_coordinates = models.CharField(max_length=1000)
+
+    def get_rooms(self):
+        return self.room_layouts
+
+
 class Floor(models.Model):
     """
     The Floor table.
@@ -118,6 +133,11 @@ class Floor(models.Model):
         default=1, validators=[MaxValueValidator(10), MinValueValidator(1)]
     )
     created_at = models.DateTimeField(auto_now_add=True)
+    layout = models.ForeignKey(
+        FloorLayout,
+        on_delete=models.CASCADE,
+        related_name="floor_layouts",
+    )
 
     class Meta:
         verbose_name_plural = "Floors"
@@ -128,6 +148,9 @@ class Floor(models.Model):
 
     def get_building(self):
         return self.building
+
+    def get_layout(self):
+        return self.layout
 
 
 class Room(models.Model):
@@ -143,7 +166,6 @@ class Room(models.Model):
         (PEPSI, "Pepsi"),
         (COKE, "Coke"),
     )
-
 
     floor = models.ForeignKey(
         Floor, on_delete=models.CASCADE, related_name="floor_rooms"
@@ -180,6 +202,10 @@ class MyEventManager(EventManager):
 
 
 class MyEvent(Event):
+    """
+    The Event / Schedule table.
+    """
+
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="events_room")
     objects = MyEventManager()
 

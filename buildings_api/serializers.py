@@ -1,5 +1,19 @@
 from rest_framework import serializers
-from buildings.models import Building, BuildingImage, Address, Floor, Room, MyEvent
+from buildings.models import (
+    Building,
+    BuildingImage,
+    Address,
+    Floor,
+    Room,
+    MyEvent,
+    FloorLayout,
+)
+
+
+class FloorLayOutSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FloorLayout
+        fields = "__all__"
 
 
 class BuildingSerializer(serializers.ModelSerializer):
@@ -49,10 +63,16 @@ class AddressSerializer(serializers.ModelSerializer):
 
 class FloorSerializer(serializers.ModelSerializer):
     rooms = serializers.SerializerMethodField(read_only=True)
+    layout = serializers.SerializerMethodField(read_only=True)
 
     def get_rooms(self, obj):
         room = obj.floor_rooms
         serializer = RoomSerializer(room, many=True)
+        return serializer.data
+
+    def get_layout(self, obj):
+        layout = obj.layout
+        serializer = FloorLayOutSerializer(layout, many=False)
         return serializer.data
 
     class Meta:
@@ -61,7 +81,6 @@ class FloorSerializer(serializers.ModelSerializer):
 
 
 class MyEventSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = MyEvent
         fields = "__all__"

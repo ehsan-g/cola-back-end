@@ -1,5 +1,15 @@
 from django.contrib import admin
-from buildings.models import Building, BuildingImage, Address, Floor, Room, MyEvent
+from buildings.models import (
+    Building,
+    FloorLayout,
+    BuildingImage,
+    Address,
+    Floor,
+    Room,
+    MyEvent,
+)
+from import_export import resources
+from import_export.admin import ImportExportModelAdmin
 
 
 class BuildingImageInline(admin.StackedInline):
@@ -18,6 +28,22 @@ class RoomInline(admin.StackedInline):
     model = Room
 
 
+class LayoutResource(resources.ModelResource):
+    class Meta:
+        model = FloorLayout
+
+
+#  can import from admin panel
+class LayoutAdminConfig(ImportExportModelAdmin):
+
+    resource_class = LayoutResource
+    list_display = [
+        "name",
+        "wall_coordinates",
+        "room_coordinates",
+    ]
+
+
 class BuildingAdminConfig(admin.ModelAdmin):
     model = Building
     inlines = [BuildingImageInline, AddressInline, FloorInline]
@@ -30,12 +56,7 @@ class BuildingAdminConfig(admin.ModelAdmin):
 
 class FloorAdminConfig(admin.ModelAdmin):
     model = Floor
-    list_display = [
-        "title",
-        "level",
-        "created_at",
-        "get_building",
-    ]
+    list_display = ["title", "level", "created_at", "get_building", "get_layout"]
     inlines = [RoomInline]
 
 
@@ -57,6 +78,7 @@ class MyEventAdminConfig(admin.ModelAdmin):
     list_display = ["id", "title", "room", "get_floor", "get_building"]
 
 
+admin.site.register(FloorLayout, LayoutAdminConfig)
 admin.site.register(Building, BuildingAdminConfig)
 admin.site.register(Floor, FloorAdminConfig)
 admin.site.register(Room, RoomAdminConfig)
