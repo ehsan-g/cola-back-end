@@ -63,6 +63,7 @@ class FloorAdminConfig(admin.ModelAdmin):
 class RoomAdminConfig(admin.ModelAdmin):
     model = Room
     list_display = [
+        "id",
         "title",
         "capacity",
         "permission_level",

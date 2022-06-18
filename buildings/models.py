@@ -206,7 +206,7 @@ class MyEvent(Event):
     The Event / Schedule table.
     """
 
-    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="events_room")
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="my_events_room")
     objects = MyEventManager()
 
     def __str__(self):

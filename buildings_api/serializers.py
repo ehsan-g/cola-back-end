@@ -87,10 +87,10 @@ class MyEventSerializer(serializers.ModelSerializer):
 
 
 class RoomSerializer(serializers.ModelSerializer):
-    events_room = serializers.SerializerMethodField(read_only=True)
+    my_events_room = serializers.SerializerMethodField(read_only=True)
 
-    def get_events_room(self, obj):
-        events = obj.events_room
+    def get_my_events_room(self, obj):
+        events = obj.my_events_room.all()
         serializer = MyEventSerializer(events, many=True)
         return serializer.data
 
