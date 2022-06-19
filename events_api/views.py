@@ -17,10 +17,31 @@ from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FormParser
 
 
-class EventList(generics.ListCreateAPIView):
+class EventList(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = MyEventSerializer
-    queryset = MyEvent.objects.all()
+
+    def get_queryset(self):
+        return MyEvent.objects.all()
+
+    def get_object(self, queryset=None, **kwargs):
+        item = self.kwargs.get("pk")
+        return get_object_or_404(MyEvent, slug=item)
+
+
+# class EventList(viewsets.ViewSet):
+#     permission_classes = [IsAuthenticated]
+#     serializer_class = MyEventSerializer
+#     events = MyEvent.objects.all()
+
+#     def list(self, request):
+#         serializer = MyEventSerializer(self.events, many=True)
+#         return Response({"events": serializer.data})
+
+#     def retrieve(self, request, pk=None, **kwargs):
+#         room = get_object_or_404(Room, id=pk)
+#         serializer = MyEventSerializer(self.events, many=True)
+#         return Response({"events": serializer.data})
 
 
 # class EventList(RetrieveUpdateDestroyAPIView):
