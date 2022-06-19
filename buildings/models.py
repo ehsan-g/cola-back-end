@@ -206,7 +206,13 @@ class MyEvent(Event):
     The Event / Schedule table.
     """
 
-    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="my_events_room")
+    capacity = models.IntegerField(default=0)
+    attendees = models.ManyToManyField(
+        MyUser, related_name="my_event_attendees", blank=True
+    )
+    room = models.ForeignKey(
+        Room, on_delete=models.CASCADE, related_name="my_events_room"
+    )
     objects = MyEventManager()
 
     def __str__(self):
@@ -217,3 +223,4 @@ class MyEvent(Event):
 
     def get_building(self):
         return self.room.floor.building
+

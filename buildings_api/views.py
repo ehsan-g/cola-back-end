@@ -1,10 +1,10 @@
-from buildings.models import Building, Room, MyEvent
+from buildings.models import Building
 from .serializers import BuildingSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import BuildingSerializer, MyEventSerializer
+from .serializers import BuildingSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import (
     IsAuthenticated,
@@ -33,13 +33,3 @@ class BuildingList(APIView):
 
         serializer = BuildingSerializer(buildings, many=True)
         return Response({"buildings": serializer.data})
-
-
-class EventList(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, *args, **kwargs):
-        room = Room.objects.get(id=kwargs["roomId"])
-        events = room.my_events_room.all()
-        serializer = MyEventSerializer(events, many=True)
-        return Response({"events": serializer.data})

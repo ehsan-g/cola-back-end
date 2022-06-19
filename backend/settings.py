@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "users_api",
     "buildings",
     "buildings_api",
+    "events_api",
     "schedule",
     "djangobower",
 ]

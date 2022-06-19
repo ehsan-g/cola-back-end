@@ -8,6 +8,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/v1/users/", include("users_api.urls", namespace="users_api")),
     path("api/v1/buildings/", include("buildings_api.urls", namespace="buildings_api")),
+    path("api/v1/events/", include("events_api.urls", namespace="events_api")),
 ]
 
 if settings.DEBUG:
