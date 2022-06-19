@@ -1,15 +1,33 @@
-from .views import EventList
+from .views import (
+    EventList,
+    RoomEvents,
+    EventDetail,
+    EventListFilter,
+    EventRegister,
+)
 from rest_framework.routers import DefaultRouter
+from django.urls import include, path
 
 app_name = "event_api"
-router = DefaultRouter()
-router.register("", EventList, basename="list-events")
-# router.register("rooms/<int:roomId>", EventList, basename="room-events")
-urlpatterns = router.urls
+# router = DefaultRouter()
+# router.register("", EventList, basename="list-events")
+# router.register(r"rooms", EventList, basename="room-events")
+# urlpatterns = router.urls
 
 
-# urlpatterns = [
-#     # path("register/<int:eventId>", EventList.as_view(), name="register-events"),
-#     # path("unregister/int:eventId>", EventList.as_view(), name="unregister-events"),
-#     path("rooms/<int:roomId>", EventList.as_view(), name="list-events"),
-# ]
+urlpatterns = [
+    path("", EventList.as_view(), name="list-events"),
+    path("event/<str:pk>", EventDetail.as_view(), name="event_detail"),
+    path("search/", EventListFilter.as_view(), name="search-event"),
+    path("rooms/<int:roomId>/", RoomEvents.as_view(), name="room-list-events"),
+    path(
+        "register/<int:eventId>/<int:userId>",
+        EventRegister.as_view(),
+        name="register-events",
+    ),
+    # path(
+    #     "unregister/int:eventId>/<int:userId>",
+    #     EventRegister.as_view(),
+    #     name="unregister-events",
+    # ),
+]

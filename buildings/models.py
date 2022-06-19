@@ -93,9 +93,9 @@ class Address(models.Model):
     building = models.OneToOneField(
         Building, on_delete=models.CASCADE, related_name="building_address"
     )
-    country = models.CharField(max_length=200, null=True, blank=True)
-    city = models.CharField(max_length=200, null=True, blank=True)
-    address = models.TextField(blank=True)
+    country = models.CharField(max_length=200, null=True, blank=False)
+    city = models.CharField(max_length=200, null=True, blank=False)
+    address = models.TextField(blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
