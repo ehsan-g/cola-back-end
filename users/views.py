@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import MyUserSerializer
+from .serializers import UserSerializer
 from rest_framework.permissions import AllowAny
 
 
@@ -9,7 +9,7 @@ class MyUserCreate(APIView):
     permission_classes = [AllowAny]
 
     def register(self, request, format="json"):
-        serializer = MyUserSerializer(data=request.data)
+        serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
             if user:

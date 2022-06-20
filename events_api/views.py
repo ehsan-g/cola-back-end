@@ -1,21 +1,14 @@
 from rest_framework.response import Response
-from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from .serializers import MyEventSerializer
-from django.db.models import Q
 from buildings.models import Room, MyEvent
 from users.models import MyUser
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-from rest_framework.authentication import (
-    TokenAuthentication,
-)
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, filters, generics, permissions
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework import status
-from rest_framework.parsers import MultiPartParser, FormParser
 
 
 class EventList(generics.ListAPIView):
@@ -24,6 +17,15 @@ class EventList(generics.ListAPIView):
 
     def get_queryset(self):
         return MyEvent.objects.all()
+
+
+class UserEventList(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = MyEventSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return user.my_event_attendees.all()
 
 
 class EventDetail(generics.RetrieveAPIView):
@@ -43,6 +45,7 @@ class RoomEvents(generics.ListAPIView):
         return MyEvent.objects.filter(room_id=roomId)
 
 
+# no use case for this app
 class EventListFilter(generics.ListAPIView):
 
     queryset = MyEvent.objects.all()
@@ -50,7 +53,7 @@ class EventListFilter(generics.ListAPIView):
     filter_backends = [filters.SearchFilter]
     # '^' Starts-with search.
     # '=' Exact matches.
-    search_fields = ["^id"]
+    search_fields = ["=id"]
 
 
 class EventRegister(generics.UpdateAPIView):
@@ -62,15 +65,14 @@ class EventRegister(generics.UpdateAPIView):
         event.attendees.add(user)
         event.save()
         user.save()
-        return Response({"message": "mobile number updated successfully"})
+        return Response({"message": f"{user.first_name} registered successfully"})
 
-    # def delete(self, request, *args, **kwargs):
-    #     event = MyEvent.objects.get(pk=kwargs["eventId"])
-    #     user = MyUser.objects.get(pk=kwargs["userId"])
-    #     event.attendees.get(id=user.id).delete()
-    #     event.save()
-    #     user.save()
-    #     return Response({"message": "mobile number updated successfully"})
+    def delete(self, request, *args, **kwargs):
+        event = MyEvent.objects.get(pk=kwargs["eventId"])
+        user = MyUser.objects.get(pk=kwargs["userId"])
+        event.attendees.remove(user)
+        event.save()
+        return Response({"message": f"{user.first_name} un-registered successfully"})
 
     # def post(self, request, *args, **kwargs):
     #     serializer = MyEventSerializer(data=request.data)

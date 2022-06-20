@@ -93,9 +93,9 @@ class Address(models.Model):
     building = models.OneToOneField(
         Building, on_delete=models.CASCADE, related_name="building_address"
     )
-    country = models.CharField(max_length=200, null=True, blank=False)
-    city = models.CharField(max_length=200, null=True, blank=False)
-    address = models.TextField(blank=False)
+    country = models.CharField(max_length=200, null=True, blank=False, default="")
+    city = models.CharField(max_length=200, null=True, blank=False, default="")
+    address = models.TextField(blank=False, default="")
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -167,6 +167,9 @@ class Room(models.Model):
         (COKE, "Coke"),
     )
 
+    building = models.ForeignKey(
+        Building, on_delete=models.CASCADE, related_name="building_rooms"
+    )
     floor = models.ForeignKey(
         Floor, on_delete=models.CASCADE, related_name="floor_rooms"
     )
@@ -176,7 +179,7 @@ class Room(models.Model):
         default=1, validators=[MaxValueValidator(10), MinValueValidator(1)]
     )
     permission_company = MultiSelectField(
-        choices=CHOICES_COMPANY, max_choices=2, max_length=2
+        choices=CHOICES_COMPANY, max_choices=3, max_length=3
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -223,4 +226,3 @@ class MyEvent(Event):
 
     def get_building(self):
         return self.room.floor.building
-

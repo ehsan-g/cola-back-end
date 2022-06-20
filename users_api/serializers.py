@@ -59,6 +59,8 @@ class UserSerializer(serializers.ModelSerializer):
             "is_admin",
             "is_superuser",
             "is_staff",
+            "company",
+            "my_event_attendees",
         ]
 
     def get_user_name(self, obj):

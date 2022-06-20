@@ -18,7 +18,7 @@ class FloorLayOutSerializer(serializers.ModelSerializer):
 
 class BuildingSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField(read_only=True)
-    # address = serializers.SerializerMethodField(read_only=True)
+    address = serializers.SerializerMethodField(read_only=True)
     floors = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -29,12 +29,18 @@ class BuildingSerializer(serializers.ModelSerializer):
             "description",
             "company",
             "image",
+            "address",
             "floors",
         )
 
     def get_image(self, obj):
         image = obj.building_image
         serializer = BuildingImageSerializer(image, many=False)
+        return serializer.data
+
+    def get_address(self, obj):
+        address = obj.building_address
+        serializer = AddressSerializer(address, many=False)
         return serializer.data
 
     def get_floors(self, obj):

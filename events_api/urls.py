@@ -4,6 +4,7 @@ from .views import (
     EventDetail,
     EventListFilter,
     EventRegister,
+    UserEventList,
 )
 from rest_framework.routers import DefaultRouter
 from django.urls import include, path
@@ -18,6 +19,7 @@ app_name = "event_api"
 urlpatterns = [
     path("", EventList.as_view(), name="list-events"),
     path("event/<str:pk>", EventDetail.as_view(), name="event_detail"),
+    path("mine", UserEventList.as_view(), name="user_eventsl"),
     path("search/", EventListFilter.as_view(), name="search-event"),
     path("rooms/<int:roomId>/", RoomEvents.as_view(), name="room-list-events"),
     path(
@@ -25,9 +27,4 @@ urlpatterns = [
         EventRegister.as_view(),
         name="register-events",
     ),
-    # path(
-    #     "unregister/int:eventId>/<int:userId>",
-    #     EventRegister.as_view(),
-    #     name="unregister-events",
-    # ),
 ]

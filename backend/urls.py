@@ -11,14 +11,11 @@ urlpatterns = [
     path("api/v1/users/", include("users_api.urls", namespace="users_api")),
     path("api/v1/buildings/", include("buildings_api.urls", namespace="buildings_api")),
     path("api/v1/events/", include("events_api.urls", namespace="events_api")),
-    
     # API schema and Documentation
-    path('schema/docs/', include_docs_urls(title='Cola')),
+    path("schema/docs/", include_docs_urls(title="Cola")),
     path(
         "schema",
-        get_schema_view(
-            title="Cola", description="API for the Cola", version="1.0.0"
-        ),
+        get_schema_view(title="Cola", description="API for the Cola", version="1.0.0"),
         name="openapi-schema",
     ),
 ]
