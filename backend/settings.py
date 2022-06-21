@@ -1,7 +1,13 @@
 import os
 from pathlib import Path
 from datetime import timedelta
+import environ
 
+env = environ.Env()
+# read th .env file
+environ.Env.read_env()
+
+SECRET_KEY = env("SECRET_KEY")
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -11,13 +17,15 @@ print(BASE_DIR)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-i$jt(xbf3*9ow4rf%eq7(!8^i@fg0436o)dnovt#z2=mnr@0h9"
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
+DEBUG = env("DEBUG")
+print('DEBUG')
+print(DEBUG)
 ALLOWED_HOSTS = []
+# ALLOWED_HOSTS_ENV = os.environ.get('ALLOWED_HOSTS')
+# if ALLOWED_HOSTS_ENV:
+#     ALLOWED_HOSTS.extend(ALLOWED_HOSTS_ENV.split(','))
 
 
 # Application definition
@@ -129,17 +137,16 @@ def get_secret(key, default):
     return value
 
 
-print(get_secret("SQL_PASSWORD", os.environ.get("SQL_PASSWORD", "postgres")))
-
-
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "postgres",
-        "USER": "postgres",
-        "PASSWORD": "postgres",
-        "HOST": "db",
-        "PORT": 5432,
+        "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
+        "NAME": os.environ.get("SQL_DATABASE", "postgres"),
+        "USER": os.environ.get("SQL_USER", "postgres"),
+        "PASSWORD": get_secret(
+            "SQL_PASSWORD", os.environ.get("SQL_PASSWORD", "postgres")
+        ),
+        "HOST": os.environ.get("SQL_HOST", "localhost"),
+        "PORT": os.environ.get("SQL_PORT", "5432"),
     }
 }
 
