@@ -57,8 +57,9 @@ class EventListFilter(generics.ListAPIView):
 
 
 class EventRegister(generics.UpdateAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = MyEventSerializer
-
+    # TODO: check user auth for delete/put
     def update(self, request, *args, **kwargs):
         event = MyEvent.objects.get(pk=kwargs["eventId"])
         user = MyUser.objects.get(pk=kwargs["userId"])
