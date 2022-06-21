@@ -22,11 +22,9 @@ print(BASE_DIR)
 DEBUG = env("DEBUG")
 print('DEBUG')
 print(DEBUG)
-ALLOWED_HOSTS = []
-# ALLOWED_HOSTS_ENV = os.environ.get('ALLOWED_HOSTS')
-# if ALLOWED_HOSTS_ENV:
-#     ALLOWED_HOSTS.extend(ALLOWED_HOSTS_ENV.split(','))
+ALLOWED_HOSTS = env('ALLOWED_HOSTS')
 
+ALLOWED_HOSTS= []
 
 # Application definition
 
